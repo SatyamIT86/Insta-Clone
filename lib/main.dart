@@ -5,6 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:insta_clone_flutter/responsive/mobile_screen_layout.dart';
 import 'package:insta_clone_flutter/responsive/responsive_layout_screen.dart';
 import 'package:insta_clone_flutter/responsive/web_screen_layout.dart';
+import 'package:insta_clone_flutter/screens/login_screen.dart';
+import 'package:insta_clone_flutter/screens/signup_screen.dart';
 import 'package:insta_clone_flutter/utils/colors.dart';
 
 void main() async {
@@ -38,10 +40,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: mobileBackgroundColor,
       ),
-      home: const ResponsiveLayout(
-        webScreenLayout: WebScreenLayout(),
-        mobileScreenLayout: MobileScreenLayout(),
-      ),
+      // home: const ResponsiveLayout(
+      //   webScreenLayout: WebScreenLayout(),
+      //   mobileScreenLayout: MobileScreenLayout(),
+      // ),
+      home: SignUpScreen(),
     );
   }
 }
