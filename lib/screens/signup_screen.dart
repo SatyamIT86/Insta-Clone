@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:insta_clone_flutter/resources/auth_methods.dart';
 import 'package:insta_clone_flutter/utils/colors.dart';
+import 'package:insta_clone_flutter/utils/utils.dart';
 import 'package:insta_clone_flutter/widgets/text_field_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -16,6 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _image;
 
   @override
   void dispose() {
@@ -24,6 +29,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _bioController.dispose();
     _usernameController.dispose();
     super.dispose();
+  }
+
+  bool _isPickingImage = false;
+
+  void selectImage() async {
+    if (_isPickingImage) return;
+    _isPickingImage = true;
+    Uint8List? im = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = im;
+    });
+    _isPickingImage = false;
   }
 
   @override
@@ -45,17 +62,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 64),
               Stack(
                 children: [
-                  CircleAvatar(
-                    radius: 64,
-                    backgroundImage: NetworkImage(
-                      "https://images.unsplash.com/photo-1773332611514-238856b76198?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                    ),
-                  ),
+                  _image != null
+                      ? CircleAvatar(
+                          radius: 64,
+                          backgroundImage: MemoryImage(_image!),
+                        )
+                      : CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                            "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
+                          ),
+                        ),
                   Positioned(
                     bottom: -10,
                     left: 80,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: selectImage,
                       icon: const Icon(Icons.add_a_photo),
                       color: Colors.blue,
                     ),
@@ -96,7 +118,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     password: _passwordController.text,
                     username: _usernameController.text,
                     bio: _bioController.text,
-                    // file: Uint8List(0),
+                    file: _image!,
                   );
                   print(res);
                 },
