@@ -21,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
+  bool _isloading = false;
 
   @override
   void dispose() {
@@ -41,6 +42,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _image = im;
     });
     _isPickingImage = false;
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isloading = true;
+    });
+    String res = await AuthMethods().signupUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!,
+    );
+    if (res != "success") {
+      showSnackBar(res, context);
+    }
+    setState(() {
+      _isloading = false;
+    });
   }
 
   @override
@@ -112,18 +132,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 24),
 
               InkWell(
-                onTap: () async {
-                  String res = await AuthMethods().signupUser(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    username: _usernameController.text,
-                    bio: _bioController.text,
-                    file: _image!,
-                  );
-                  print(res);
-                },
+                onTap: signUpUser,
                 child: Container(
-                  child: const Text("Log in"),
+                  child: _isloading
+                      ? const CircularProgressIndicator()
+                      : const Text("Sign Up"),
                   width: double.infinity,
                   alignment: Alignment.center,
 
@@ -148,7 +161,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   GestureDetector(
                     onTap: () {},
                     child: Container(
-                      child: const Text(
+                      child: Text(
                         "Sign Up",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),

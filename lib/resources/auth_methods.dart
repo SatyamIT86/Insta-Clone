@@ -26,6 +26,7 @@ class AuthMethods {
           email: email,
           password: password,
         );
+        print(cred.user!.uid);
 
         String photoUrl = await StorageMethods().uploadImageToCloudinary(
           file,
@@ -47,8 +48,14 @@ class AuthMethods {
       } else {
         res = "Please enter all the fields";
       }
-    } catch (err) {
-      res = err.toString();
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'invalid-email') {
+        res = 'The email is badly formatted.';
+      } else if (err.code == 'weak-password') {
+        res = 'Password should be at least 6 characters.';
+      } else if (err.code == 'email-already-in-use') {
+        res = 'The email is already in use by another account.';
+      }
     }
     return res;
   }
