@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:insta_clone_flutter/resources/auth_methods.dart';
+import 'package:insta_clone_flutter/responsive/mobile_screen_layout.dart';
+import 'package:insta_clone_flutter/responsive/responsive_layout_screen.dart';
+import 'package:insta_clone_flutter/responsive/web_screen_layout.dart';
+import 'package:insta_clone_flutter/screens/login_screen.dart';
 import 'package:insta_clone_flutter/utils/colors.dart';
 import 'package:insta_clone_flutter/utils/utils.dart';
 import 'package:insta_clone_flutter/widgets/text_field_input.dart';
@@ -55,12 +59,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
       bio: _bioController.text,
       file: _image!,
     );
-    if (res != "success") {
-      showSnackBar(res, context);
-    }
     setState(() {
       _isloading = false;
     });
+    if (res != "success") {
+      showSnackBar(res, context);
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            webScreenLayout: WebScreenLayout(),
+            mobileScreenLayout: MobileScreenLayout(),
+          ),
+        ),
+      );
+    }
+  }
+
+  void navigateToLogIn() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -159,10 +178,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: navigateToLogIn,
                     child: Container(
                       child: Text(
-                        "Sign Up",
+                        "Log In",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 8),
